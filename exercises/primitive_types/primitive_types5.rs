@@ -6,8 +6,8 @@
 // for a hint.
 
 fn main() {
-    let (name, age) = ("Furry McFurson", 3.5);
-    let cat = (name, age);
+    let cat= ("Furry McFurson", 3.5);
+    let (name, age) = cat;
 
     println!("{} is {} years old.", cat.0, age);
 }
