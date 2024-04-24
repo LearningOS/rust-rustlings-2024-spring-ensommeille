@@ -5,9 +5,11 @@
 // Execute `rustlings hint macros3` or use the `hint` watch subcommand for a
 // hint.
 
-// I AM NOT DONE
+// in modules, macros should be defined with the #[macro_export] attribute
+
 
 mod macros {
+    #[macro_export]
     macro_rules! my_macro {
         () => {
             println!("Check out my macro!");
