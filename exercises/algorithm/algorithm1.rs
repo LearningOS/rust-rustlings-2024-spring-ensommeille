@@ -2,7 +2,6 @@
 	single linked list merge
 	This problem requires you to merge two ordered singly linked lists into one ordered singly linked list
 */
-// I AM NOT DONE
 
 use std::fmt::{self, Display, Formatter};
 use std::ptr::NonNull;
@@ -23,19 +22,19 @@ impl<T> Node<T> {
     }
 }
 #[derive(Debug)]
-struct LinkedList<T> {
+struct LinkedList<T> where T: PartialOrd + Clone{
     length: u32,
     start: Option<NonNull<Node<T>>>,
     end: Option<NonNull<Node<T>>>,
 }
 
-impl<T> Default for LinkedList<T> {
+impl<T: PartialOrd + Clone> Default for LinkedList<T> {
     fn default() -> Self {
         Self::new()
     }
 }
 
-impl<T> LinkedList<T> {
+impl<T: PartialOrd + Clone> LinkedList<T> {
     pub fn new() -> Self {
         Self {
             length: 0,
@@ -72,17 +71,52 @@ impl<T> LinkedList<T> {
 	pub fn merge(list_a:LinkedList<T>,list_b:LinkedList<T>) -> Self
 	{
 		//TODO
-		Self {
+        let mut ret = Self {
             length: 0,
             start: None,
             end: None,
+        };
+
+        ret.length = list_a.length + list_b.length;
+        let mut a_it = list_a.start;
+        let mut b_it = list_b.start;
+
+        while a_it.is_some() && b_it.is_some() {
+            let a = unsafe { a_it.unwrap().as_ref() };
+            let b = unsafe { b_it.unwrap().as_ref() };
+            // let a = unsafe { Box::from_raw(a_it.unwrap().as_ptr()) };
+            // let b = unsafe { Box::from_raw(b_it.unwrap().as_ptr()) };
+
+            if a.val < b.val {
+                ret.add(a.val.clone());
+                a_it = a.next;
+            } else {
+                ret.add(b.val.clone());
+                b_it = b.next;
+            }
         }
+
+        while a_it.is_some() {
+            let a = unsafe { a_it.unwrap().as_ref() };
+            // let a = unsafe { Box::from_raw(a_it.unwrap().as_ptr()) };
+            ret.add(a.val.clone());
+            a_it = a.next;
+        }
+
+        while b_it.is_some() {
+            let b = unsafe { b_it.unwrap().as_ref() };
+            // let b = unsafe { Box::from_raw(b_it.unwrap().as_ptr()) };
+            ret.add(b.val.clone());
+            b_it = b.next;
+        }
+
+        ret
 	}
 }
 
 impl<T> Display for LinkedList<T>
 where
-    T: Display,
+    T: Display + PartialOrd + Clone
 {
     fn fmt(&self, f: &mut Formatter) -> fmt::Result {
         match self.start {
@@ -103,6 +137,7 @@ where
         }
     }
 }
+
 
 #[cfg(test)]
 mod tests {
